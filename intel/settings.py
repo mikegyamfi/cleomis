@@ -29,7 +29,8 @@ SECRET_KEY = config("SECRET_KEY")
 DEBUG = False
 
 ALLOWED_HOSTS = [
-
+    'cleomis-h4hj6.ondigitalocean.app',
+    'www.cleomis.com'
 ]
 
 
