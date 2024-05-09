@@ -350,6 +350,16 @@ def mtn_pay_with_wallet(request):
         else:
             bundle = models.MTNBundlePrice.objects.get(price=float(amount)).bundle_volume
         print(bundle)
+
+        new_mtn_transaction = models.MTNTransaction.objects.create(
+            user=request.user,
+            bundle_number=phone_number,
+            offer=f"{bundle}MB",
+            reference=reference,
+        )
+        new_mtn_transaction.save()
+        user.wallet -= float(amount)
+        user.save()
         import requests
 
         url = "https://www.geosams.com/api/initiate_mtn_transaction"
@@ -368,15 +378,6 @@ def mtn_pay_with_wallet(request):
 
         print(response.text)
         sms_message = f"An order has been placed. {bundle}MB for {phone_number}"
-        new_mtn_transaction = models.MTNTransaction.objects.create(
-            user=request.user,
-            bundle_number=phone_number,
-            offer=f"{bundle}MB",
-            reference=reference,
-        )
-        new_mtn_transaction.save()
-        user.wallet -= float(amount)
-        user.save()
         sms_body = {
             'recipient': f"233{admin}",
             'sender_id': 'Geosams',
